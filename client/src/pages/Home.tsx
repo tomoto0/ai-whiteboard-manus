@@ -7,6 +7,7 @@ import { marked } from "marked";
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const aiResponseRef = useRef<HTMLDivElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentTool, setCurrentTool] = useState<"draw" | "erase">("draw");
   const [currentColor, setCurrentColor] = useState("#000000");
@@ -39,6 +40,57 @@ export default function Home() {
 
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
+
+  // Initialize MathJax from CDN
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://polyfill.io/v3/polyfill.min.js?features=es6";
+    document.head.appendChild(script);
+
+    const mathJaxScript = document.createElement("script");
+    mathJaxScript.id = "MathJax-script";
+    mathJaxScript.async = true;
+    mathJaxScript.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+    document.head.appendChild(mathJaxScript);
+
+    // Configure MathJax
+    (window as any).MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]],
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+      if (document.head.contains(mathJaxScript)) {
+        document.head.removeChild(mathJaxScript);
+      }
+    };
+  }, []);
+
+  // Render MathJax when aiResponse changes
+  useEffect(() => {
+    if (aiResponse && aiResponseRef.current) {
+      // Wait for MathJax to be loaded
+      const checkAndRender = () => {
+        if ((window as any).MathJax && (window as any).MathJax.typesetPromise) {
+          (window as any).MathJax.typesetPromise([aiResponseRef.current]).catch((err: any) =>
+            console.log("MathJax error:", err)
+          );
+        } else {
+          // Retry after a short delay
+          setTimeout(checkAndRender, 100);
+        }
+      };
+      checkAndRender();
+    }
+  }, [aiResponse]);
 
   // Drawing functions
   const getCanvasImage = (): string | null => {
@@ -266,7 +318,8 @@ export default function Home() {
           </div>
           {aiResponse && (
             <div
-              className="bg-gray-50 p-3 rounded border border-gray-200 max-h-96 overflow-y-auto text-sm"
+              ref={aiResponseRef}
+              className="bg-gray-50 p-3 rounded border border-gray-200 max-h-96 overflow-y-auto text-sm prose prose-sm"
               dangerouslySetInnerHTML={{
                 __html: marked(aiResponse),
               }}
