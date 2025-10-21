@@ -43,6 +43,22 @@ export default function Home() {
 
   // Initialize MathJax from CDN
   useEffect(() => {
+    // Configure MathJax before loading the script
+    (window as any).MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]],
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+      },
+      svg: {
+        fontCache: "global",
+      },
+      startup: {
+        pageReady: () => {
+          return Promise.resolve();
+        },
+      },
+    };
+
     const script = document.createElement("script");
     script.src = "https://polyfill.io/v3/polyfill.min.js?features=es6";
     document.head.appendChild(script);
@@ -52,17 +68,6 @@ export default function Home() {
     mathJaxScript.async = true;
     mathJaxScript.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
     document.head.appendChild(mathJaxScript);
-
-    // Configure MathJax
-    (window as any).MathJax = {
-      tex: {
-        inlineMath: [["$", "$"], ["\\(", "\\)"]],
-        displayMath: [["$$", "$$"], ["\\[", "\\]"]],
-      },
-      svg: {
-        fontCache: "global",
-      },
-    };
 
     return () => {
       if (document.head.contains(script)) {
@@ -74,21 +79,43 @@ export default function Home() {
     };
   }, []);
 
-  // Render MathJax when aiResponse changes
+  // Render MathJax when aiResponse changes - with proper reset and re-rendering
   useEffect(() => {
     if (aiResponse && aiResponseRef.current) {
-      // Wait for MathJax to be loaded
-      const checkAndRender = () => {
-        if ((window as any).MathJax && (window as any).MathJax.typesetPromise) {
-          (window as any).MathJax.typesetPromise([aiResponseRef.current]).catch((err: any) =>
-            console.log("MathJax error:", err)
-          );
-        } else {
-          // Retry after a short delay
-          setTimeout(checkAndRender, 100);
+      // Use a small delay to ensure DOM is updated
+      const renderMathJax = async () => {
+        // Reset MathJax state
+        if ((window as any).MathJax) {
+          try {
+            // Reset the MathJax typesetPromise to clear cached state
+            (window as any).MathJax.typesetClear?.();
+          } catch (e) {
+            console.log("MathJax clear error:", e);
+          }
         }
+
+        // Wait a bit for DOM to be fully updated
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        // Now typeset the content
+        const checkAndRender = () => {
+          if ((window as any).MathJax && (window as any).MathJax.typesetPromise) {
+            (window as any).MathJax.typesetPromise([aiResponseRef.current])
+              .then(() => {
+                console.log("MathJax rendered successfully");
+              })
+              .catch((err: any) => {
+                console.log("MathJax error:", err);
+              });
+          } else {
+            // Retry after a short delay
+            setTimeout(checkAndRender, 100);
+          }
+        };
+        checkAndRender();
       };
-      checkAndRender();
+
+      renderMathJax();
     }
   }, [aiResponse]);
 
