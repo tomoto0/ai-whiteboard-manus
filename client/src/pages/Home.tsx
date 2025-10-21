@@ -41,8 +41,13 @@ export default function Home() {
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
-  // Initialize MathJax from CDN
+  // Initialize MathJax from CDN - only once
   useEffect(() => {
+    // Check if MathJax is already loaded
+    if ((window as any).MathJax) {
+      return;
+    }
+
     // Configure MathJax before loading the script
     (window as any).MathJax = {
       tex: {
@@ -70,34 +75,19 @@ export default function Home() {
     document.head.appendChild(mathJaxScript);
 
     return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-      if (document.head.contains(mathJaxScript)) {
-        document.head.removeChild(mathJaxScript);
-      }
+      // Don't remove scripts on unmount to preserve MathJax state
     };
   }, []);
 
-  // Render MathJax when aiResponse changes - with proper reset and re-rendering
+  // Render MathJax when aiResponse changes - without clearing state
   useEffect(() => {
     if (aiResponse && aiResponseRef.current) {
       // Use a small delay to ensure DOM is updated
       const renderMathJax = async () => {
-        // Reset MathJax state
-        if ((window as any).MathJax) {
-          try {
-            // Reset the MathJax typesetPromise to clear cached state
-            (window as any).MathJax.typesetClear?.();
-          } catch (e) {
-            console.log("MathJax clear error:", e);
-          }
-        }
-
         // Wait a bit for DOM to be fully updated
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
-        // Now typeset the content
+        // Now typeset the content - without clearing
         const checkAndRender = () => {
           if ((window as any).MathJax && (window as any).MathJax.typesetPromise) {
             (window as any).MathJax.typesetPromise([aiResponseRef.current])
