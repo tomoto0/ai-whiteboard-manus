@@ -5,9 +5,6 @@ import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { marked } from "marked";
 
-// Store MathJax rendered elements to prevent re-rendering
-const renderedElements = new WeakSet<HTMLElement>();
-
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const aiResponseRef = useRef<HTMLDivElement>(null);
@@ -82,28 +79,27 @@ export default function Home() {
     };
   }, []);
 
-  // Render MathJax when aiResponse changes - only render new content
+  // Render MathJax when aiResponse changes
   useEffect(() => {
     if (aiResponse && aiResponseRef.current) {
       // Use a small delay to ensure DOM is updated
       const renderMathJax = async () => {
-        // Wait a bit for DOM to be fully updated
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        // Wait for DOM to be fully updated
+        await new Promise((resolve) => setTimeout(resolve, 150));
 
-        // Now typeset the content - only if not already rendered
+        // Now typeset the content
         const checkAndRender = () => {
           if ((window as any).MathJax && (window as any).MathJax.typesetPromise) {
-            // Check if this element has already been rendered
-            if (!renderedElements.has(aiResponseRef.current!)) {
+            try {
               (window as any).MathJax.typesetPromise([aiResponseRef.current])
                 .then(() => {
                   console.log("MathJax rendered successfully");
-                  // Mark this element as rendered
-                  renderedElements.add(aiResponseRef.current!);
                 })
                 .catch((err: any) => {
                   console.log("MathJax error:", err);
                 });
+            } catch (e) {
+              console.log("MathJax exception:", e);
             }
           } else {
             // Retry after a short delay
@@ -344,11 +340,11 @@ export default function Home() {
           {aiResponse && (
             <div
               ref={aiResponseRef}
-              className="bg-gray-50 p-3 rounded border border-gray-200 max-h-96 overflow-y-auto text-sm prose prose-sm"
-              dangerouslySetInnerHTML={{
-                __html: marked(aiResponse),
-              }}
-            />
+              className="bg-gray-50 p-3 rounded border border-gray-200 max-h-96 overflow-y-auto text-sm"
+            >
+              {/* Render markdown as plain text and let MathJax handle it */}
+              {aiResponse}
+            </div>
           )}
         </Card>
       )}
