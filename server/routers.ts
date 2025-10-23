@@ -33,19 +33,21 @@ export const appRouter = router({
         try {
           const messages: any[] = [];
 
-          if (imageData) {
+            if (imageData) {
             // Vision model with image
             const systemPrompt = `You are an AI assistant for an online whiteboard. Analyze the attached whiteboard image and respond in the following format:
 
-1. **Concise description of the current drawing** (objectively describe what is drawn)
-2. **Answer to the user's question**: ${question}
+1. Concise description of the current drawing (objectively describe what is drawn)
+2. Answer to the user's question: ${question}
 
 Provide specific and practical advice or answers to the user's question, taking into account the drawing content, in English.
 
 IMPORTANT: When writing mathematical formulas, ALWAYS use LaTeX notation enclosed in dollar signs:
 - For inline formulas, use single dollar signs: $formula$
 - For display formulas, use double dollar signs: $$formula$$
-- Examples: $f(x) = x^{0.5} \\cdot y^{0.5}$ or $f'(x) = 0.5 \\cdot x^{-0.5} \\cdot y^{0.5}$`;
+- Examples: $f(x) = x^{0.5} \cdot y^{0.5}$ or $f'(x) = 0.5 \cdot x^{-0.5} \cdot y^{0.5}$
+
+NOTE: Do NOT use markdown formatting like ** for bold text. Use plain text with clear line breaks instead.`;;
 
             messages.push({
               role: "user",
@@ -70,7 +72,9 @@ If the question is about drawing, sketching, or organizing ideas, provide specif
 IMPORTANT: When writing mathematical formulas, ALWAYS use LaTeX notation enclosed in dollar signs:
 - For inline formulas, use single dollar signs: $formula$
 - For display formulas, use double dollar signs: $$formula$$
-- Examples: $f(x) = x^{0.5} \\cdot y^{0.5}$ or $f'(x) = 0.5 \\cdot x^{-0.5} \\cdot y^{0.5}$`;
+- Examples: $f(x) = x^{0.5} \cdot y^{0.5}$ or $f'(x) = 0.5 \cdot x^{-0.5} \cdot y^{0.5}$
+
+NOTE: Do NOT use markdown formatting like ** for bold text. Use plain text with clear line breaks instead.`;
 
             messages.push({
               role: "user",
@@ -108,16 +112,18 @@ IMPORTANT: When writing mathematical formulas, ALWAYS use LaTeX notation enclose
 
 Please respond in the following format:
 
-1. **Analysis of the current drawing** (briefly describe what is drawn and its state)
-2. **Idea for development/completion** (how to develop the current drawing)
-3. **Elements to add** (colors, shapes, text, decorations, etc.)
-4. **Specific steps to completion** (step-by-step explanation)
+1. Analysis of the current drawing (briefly describe what is drawn and its state)
+2. Idea for development/completion (how to develop the current drawing)
+3. Elements to add (colors, shapes, text, decorations, etc.)
+4. Specific steps to completion (step-by-step explanation)
 
 Provide practical advice in English to make the work more attractive and complete, while leveraging the good parts of the current drawing.
 
 IMPORTANT: When writing mathematical formulas, ALWAYS use LaTeX notation enclosed in dollar signs:
 - For inline formulas, use single dollar signs: $formula$
-- For display formulas, use double dollar signs: $$formula$$`;
+- For display formulas, use double dollar signs: $$formula$$
+
+NOTE: Do NOT use markdown formatting like ** for bold text. Use plain text with clear line breaks instead.`;
 
             messages.push({
               role: "user",
@@ -144,7 +150,9 @@ Please explain in English in a way that is easy for beginners to understand.
 
 IMPORTANT: When writing mathematical formulas, ALWAYS use LaTeX notation enclosed in dollar signs:
 - For inline formulas, use single dollar signs: $formula$
-- For display formulas, use double dollar signs: $$formula$$`;
+- For display formulas, use double dollar signs: $$formula$$
+
+NOTE: Do NOT use markdown formatting like ** for bold text. Use plain text with clear line breaks instead.`;
 
             messages.push({
               role: "user",

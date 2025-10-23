@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { marked } from "marked";
+
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -242,10 +242,7 @@ export default function Home() {
     }
   };
 
-  // Convert markdown to HTML
-  const renderMarkdown = (text: string): string => {
-    return marked(text) as string;
-  };
+
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
@@ -345,11 +342,10 @@ export default function Home() {
           {aiResponse && (
             <div
               ref={aiResponseRef}
-              className="bg-gray-50 p-3 rounded border border-gray-200 max-h-96 overflow-y-auto text-sm prose prose-sm prose-p:my-2 prose-p:leading-relaxed prose-headings:mt-3 prose-headings:mb-2 prose-li:my-1"
-              dangerouslySetInnerHTML={{
-                __html: renderMarkdown(aiResponse),
-              }}
-            />
+              className="bg-gray-50 p-3 rounded border border-gray-200 max-h-96 overflow-y-auto text-sm whitespace-pre-wrap break-words"
+            >
+              {aiResponse}
+            </div>
           )}
         </Card>
       )}
