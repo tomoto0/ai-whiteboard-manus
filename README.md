@@ -59,42 +59,42 @@ Access the live application directly from the link above.
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Frontend (React)                     │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │  Canvas Drawing Interface                        │  │
-│  │  - Drawing tools (pen, eraser)                   │  │
-│  │  - Color and size controls                       │  │
-│  │  - Save/Clear functions                          │  │
-│  └──────────────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │  AI Assistant Panel                              │  │
-│  │  - Question input                                │  │
-│  │  - Ask AI / Generate Idea buttons                │  │
-│  │  - Response display with MathJax rendering       │  │
-│  └──────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────┐  　　│
+│  │  Canvas Drawing Interface                        │  　　│
+│  │  - Drawing tools (pen, eraser)                   │  　　│
+│  │  - Color and size controls                       │  　　│
+│  │  - Save/Clear functions                          │ 　　 │
+│  └──────────────────────────────────────────────────┘  　　│
+│  ┌──────────────────────────────────────────────────┐ 　　 │
+│  │  AI Assistant Panel                              │  　　│
+│  │  - Question input                                │  　　│
+│  │  - Ask AI / Generate Idea buttons                │ 　　 │
+│  │  - Response display with MathJax rendering       │  　　│
+│  └──────────────────────────────────────────────────┘ 　　 │
 └─────────────────────────────────────────────────────────┘
                           ↓ tRPC
 ┌─────────────────────────────────────────────────────────┐
-│                 Backend (Node.js/Express)              │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │  tRPC Routers                                    │  │
-│  │  - whiteboard.askAI: Question answering          │  │
-│  │  - whiteboard.generateIdea: Idea generation      │  │
-│  │  - auth: User authentication                     │  │
-│  └──────────────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │  Manus LLM Integration                           │  │
-│  │  - Image analysis for whiteboard content         │  │
-│  │  - Mathematical expression evaluation            │  │
-│  │  - Creative suggestion generation                │  │
-│  └──────────────────────────────────────────────────┘  │
+│                 Backend (Node.js/Express)             　　 │
+│  ┌──────────────────────────────────────────────────┐ 　　 │
+│  │  tRPC Routers                                    │ 　　 │
+│  │  - whiteboard.askAI: Question answering          │ 　　 │
+│  │  - whiteboard.generateIdea: Idea generation      │ 　　 │
+│  │  - auth: User authentication                     │  　　│
+│  └──────────────────────────────────────────────────┘  　　│
+│  ┌──────────────────────────────────────────────────┐ 　　 │
+│  │  Manus LLM Integration                           │  　　│
+│  │  - Image analysis for whiteboard content         │  　　│
+│  │  - Mathematical expression evaluation            │  　　│
+│  │  - Creative suggestion generation                │  　　│
+│  └──────────────────────────────────────────────────┘ 　　 │
 └─────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────┐
 │              Manus Platform Services                    │
 │  - LLM API (Claude/GPT-based models)                    │
-│  - OAuth Authentication                                │
-│  - Database (MySQL/TiDB)                               │
-│  - Storage (S3-compatible)                             │
+│  - OAuth Authentication                                　　│
+│  - Database (MySQL/TiDB)                               　　│
+│  - Storage (S3-compatible)                             　　│
 └─────────────────────────────────────────────────────────┘
 ```
 
